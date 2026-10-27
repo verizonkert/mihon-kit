@@ -1,4 +1,4 @@
 jdk:
   - openjdk21
 install:
-  - ./gradlew :source-api:publishToMavenLocal :core:common:publishToMavenLocal :mihon-kit:publishToMavenLocal
+  - ./gradlew --no-configuration-cache :source-api:publishToMavenLocal :core:common:publishToMavenLocal :mihon-kit:publishToMavenLocal
