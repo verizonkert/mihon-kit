@@ -19,14 +19,38 @@ android {
     }
 }
 
+val releaseVersion = (project.findProperty("VERSION_NAME") as? String)
+    ?: (project.version as? String)?.takeIf { it != "unspecified" }
+    ?: "1.0.4"
+
 afterEvaluate {
     publishing {
         publications {
             create<MavenPublication>("release") {
                 from(components["release"])
-                groupId = "com.github.verizonkert"
+                groupId = "com.github.verizonkert.mihon-kit"
                 artifactId = "mihon-kit"
-                version = "1.0.0"
+                version = releaseVersion
+
+                pom.withXml {
+                    val dependenciesNode = asNode().get("dependencies") as? groovy.util.Node ?: return@withXml
+                    dependenciesNode.children().filterIsInstance<groovy.util.Node>().forEach { dep ->
+                        val artifactIdNode = dep.get("artifactId") as? groovy.util.NodeList
+                        val groupIdNode = dep.get("groupId") as? groovy.util.NodeList
+                        val versionNode = dep.get("version") as? groovy.util.NodeList
+
+                        val artifactId = artifactIdNode?.text()
+                        val currentVersion = version ?: releaseVersion
+                        if (artifactId == "source-api") {
+                            groupIdNode?.set(0, "com.github.verizonkert.mihon-kit")
+                            versionNode?.set(0, currentVersion)
+                        } else if (artifactId == "common") {
+                            groupIdNode?.set(0, "com.github.verizonkert.mihon-kit")
+                            artifactIdNode?.set(0, "core-common")
+                            versionNode?.set(0, currentVersion)
+                        }
+                    }
+                }
             }
         }
     }

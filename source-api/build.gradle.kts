@@ -3,6 +3,7 @@ plugins {
     alias(mihonx.plugins.spotless)
 
     alias(libs.plugins.kotlin.serialization)
+    `maven-publish`
 }
 
 android {
@@ -10,6 +11,29 @@ android {
 
     defaultConfig {
         consumerProguardFiles("consumer-proguard.pro")
+    }
+
+    publishing {
+        singleVariant("release") {
+            withSourcesJar()
+        }
+    }
+}
+
+val releaseVersion = (project.findProperty("VERSION_NAME") as? String)
+    ?: (project.version as? String)?.takeIf { it != "unspecified" }
+    ?: "1.0.4"
+
+afterEvaluate {
+    publishing {
+        publications {
+            create<MavenPublication>("release") {
+                from(components["release"])
+                groupId = "com.github.verizonkert.mihon-kit"
+                artifactId = "source-api"
+                version = releaseVersion
+            }
+        }
     }
 }
 

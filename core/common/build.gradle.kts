@@ -4,10 +4,34 @@ plugins {
 
     alias(libs.plugins.metro)
     alias(libs.plugins.kotlin.serialization)
+    `maven-publish`
 }
 
 android {
     namespace = "eu.kanade.tachiyomi.core.common"
+
+    publishing {
+        singleVariant("release") {
+            withSourcesJar()
+        }
+    }
+}
+
+val releaseVersion = (project.findProperty("VERSION_NAME") as? String)
+    ?: (project.version as? String)?.takeIf { it != "unspecified" }
+    ?: "1.0.4"
+
+afterEvaluate {
+    publishing {
+        publications {
+            create<MavenPublication>("release") {
+                from(components["release"])
+                groupId = "com.github.verizonkert.mihon-kit"
+                artifactId = "core-common"
+                version = releaseVersion
+            }
+        }
+    }
 }
 
 kotlin {
