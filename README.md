@@ -1,6 +1,7 @@
 # MihonKit ⛩️
 
 [![License: GPL v3](https://img.shields.io/badge/License-GPLv3-blue.svg)](https://www.gnu.org/licenses/gpl-3.0)
+[![JitPack](https://jitpack.io/v/verizonkert/mihon-kit.svg)](https://jitpack.io/#verizonkert/mihon-kit)
 [![Platform](https://img.shields.io/badge/Platform-Android-green.svg)]()
 [![Kotlin](https://img.shields.io/badge/Language-Kotlin-purple.svg)]()
 
@@ -26,7 +27,7 @@ dependencyResolutionManagement {
 In your app's `build.gradle.kts`:
 ```kotlin
 dependencies {
-    implementation("com.github.verizonkert:mihon-kit:1.0.0")
+    implementation("com.github.verizonkert:mihon-kit:v1.0.3")
 }
 ```
 
