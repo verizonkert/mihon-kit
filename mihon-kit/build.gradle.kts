@@ -24,7 +24,7 @@ afterEvaluate {
         publications {
             create<MavenPublication>("release") {
                 from(components["release"])
-                groupId = "com.github.yourusername"
+                groupId = "com.github.verizonkert"
                 artifactId = "mihon-kit"
                 version = "1.0.0"
             }
