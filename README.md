@@ -1,7 +1,6 @@
 # MihonKit ⛩️
 
 [![License: GPL v3](https://img.shields.io/badge/License-GPLv3-blue.svg)](https://www.gnu.org/licenses/gpl-3.0)
-[![JitPack](https://jitpack.io/v/verizonkert/mihon-kit.svg)](https://jitpack.io/#verizonkert/mihon-kit)
 [![Platform](https://img.shields.io/badge/Platform-Android-green.svg)]()
 [![Kotlin](https://img.shields.io/badge/Language-Kotlin-purple.svg)]()
 
@@ -9,16 +8,18 @@ A lightweight, high-performance Android SDK to dynamically load and run **Mihon 
 
 ---
 
-## 📦 Installation
+## 📦 Installation (No Authentication Required)
 
-### Step 1: Add the JitPack repository
+### Step 1: Add the GitHub Maven repository
 In your root `settings.gradle.kts`:
 ```kotlin
 dependencyResolutionManagement {
     repositories {
         google()
         mavenCentral()
-        maven(url = "https://jitpack.io") // <-- Add this
+        maven {
+            url = uri("https://raw.githubusercontent.com/verizonkert/mihon-kit/mvn-repo")
+        }
     }
 }
 ```
@@ -27,7 +28,7 @@ dependencyResolutionManagement {
 In your app's `build.gradle.kts`:
 ```kotlin
 dependencies {
-    implementation("com.github.verizonkert:mihon-kit:v1.0.3")
+    implementation("com.github.verizonkert.mihon-kit:mihon-kit:1.0.0")
 }
 ```
 

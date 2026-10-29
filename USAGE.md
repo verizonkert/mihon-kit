@@ -17,13 +17,17 @@ This guide explains how to integrate and use every feature of **MihonKit** in yo
 
 ---
 
-## Installation
+## Installation (No Authentication Required)
 
-Add JitPack to your root `settings.gradle.kts`:
+Add the GitHub Maven repository to your root `settings.gradle.kts`:
 ```kotlin
 dependencyResolutionManagement {
     repositories {
-        maven(url = "https://jitpack.io")
+        google()
+        mavenCentral()
+        maven {
+            url = uri("https://raw.githubusercontent.com/verizonkert/mihon-kit/mvn-repo")
+        }
     }
 }
 ```
@@ -31,7 +35,7 @@ dependencyResolutionManagement {
 Add the dependency to your app module's `build.gradle.kts`:
 ```kotlin
 dependencies {
-    implementation("com.github.yourusername:mihon-kit:1.0.0")
+    implementation("com.github.verizonkert.mihon-kit:mihon-kit:1.0.0")
 }
 ```
 
