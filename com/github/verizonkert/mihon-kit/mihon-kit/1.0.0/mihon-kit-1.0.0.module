@@ -1,0 +1,301 @@
+{
+  "formatVersion": "1.1",
+  "component": {
+    "group": "com.github.verizonkert.mihon-kit",
+    "module": "mihon-kit",
+    "version": "1.0.0",
+    "attributes": {
+      "org.gradle.status": "release"
+    }
+  },
+  "createdBy": {
+    "gradle": {
+      "version": "9.8.2"
+    }
+  },
+  "variants": [
+    {
+      "name": "releaseVariantReleaseApiPublication",
+      "attributes": {
+        "org.gradle.category": "library",
+        "org.gradle.dependency.bundling": "external",
+        "org.gradle.libraryelements": "aar",
+        "org.gradle.usage": "java-api"
+      },
+      "dependencies": [
+        {
+          "group": "androidx.compose.ui",
+          "module": "ui-tooling-preview"
+        },
+        {
+          "group": "com.github.verizonkert.mihon-kit",
+          "module": "source-api",
+          "version": {
+            "requires": "1.0.0"
+          }
+        },
+        {
+          "group": "com.github.verizonkert.mihon-kit",
+          "module": "core-common",
+          "version": {
+            "requires": "1.0.0"
+          }
+        },
+        {
+          "group": "com.squareup.okhttp3",
+          "module": "okhttp",
+          "version": {
+            "requires": "5.5.1"
+          }
+        },
+        {
+          "group": "com.squareup.okhttp3",
+          "module": "okhttp-zstd",
+          "version": {
+            "requires": "5.5.1"
+          }
+        },
+        {
+          "group": "com.squareup.okhttp3",
+          "module": "okhttp-brotli",
+          "version": {
+            "requires": "5.5.1"
+          }
+        },
+        {
+          "group": "org.jsoup",
+          "module": "jsoup",
+          "version": {
+            "requires": "1.23.2"
+          }
+        },
+        {
+          "group": "org.jetbrains.kotlinx",
+          "module": "kotlinx-serialization-json",
+          "version": {
+            "requires": "1.12.0"
+          }
+        },
+        {
+          "group": "org.jetbrains.kotlinx",
+          "module": "kotlinx-coroutines-core",
+          "version": {
+            "requires": "1.11.0"
+          }
+        },
+        {
+          "group": "org.jetbrains.kotlinx",
+          "module": "kotlinx-coroutines-android",
+          "version": {
+            "requires": "1.11.0"
+          }
+        },
+        {
+          "group": "org.jetbrains.kotlinx",
+          "module": "kotlinx-coroutines-guava",
+          "version": {
+            "requires": "1.11.0"
+          }
+        },
+        {
+          "group": "uy.kohesive.injekt",
+          "module": "injekt-core",
+          "version": {
+            "requires": "1.16.1"
+          }
+        },
+        {
+          "group": "org.jetbrains.kotlin",
+          "module": "kotlin-stdlib",
+          "version": {
+            "requires": "2.4.21"
+          }
+        }
+      ],
+      "files": [
+        {
+          "name": "mihon-kit-1.0.0.aar",
+          "url": "mihon-kit-1.0.0.aar",
+          "size": 115330,
+          "sha512": "de1c64ae7b6ad13d851904434a36e34973a2cfd33c66dbfbe439e1d38b382c5eedd6b24becff4958cbb8bff7bf28b4c8c8416d34b7b8a4df4fdfa596745627b6",
+          "sha256": "7e9855fa10e7c2d92144f846a8247da54560e40d80cfb85cc4a9bd3db060cc65",
+          "sha1": "06605fb0b1192fadce013038c42e30548b35baa4",
+          "md5": "c36dffb7fc433d12ae39d7050d4f4780"
+        }
+      ]
+    },
+    {
+      "name": "releaseVariantReleaseRuntimePublication",
+      "attributes": {
+        "org.gradle.category": "library",
+        "org.gradle.dependency.bundling": "external",
+        "org.gradle.libraryelements": "aar",
+        "org.gradle.usage": "java-runtime"
+      },
+      "dependencies": [
+        {
+          "group": "androidx.compose",
+          "module": "compose-bom-beta",
+          "version": {
+            "requires": "2026.10.01"
+          },
+          "attributes": {
+            "org.gradle.category": "platform"
+          }
+        },
+        {
+          "group": "androidx.compose.ui",
+          "module": "ui"
+        },
+        {
+          "group": "androidx.compose.material3",
+          "module": "material3"
+        },
+        {
+          "group": "androidx.compose.foundation",
+          "module": "foundation"
+        },
+        {
+          "group": "mihon-kit-project.icons",
+          "module": "material-symbols",
+          "version": {
+            "requires": "unspecified"
+          }
+        },
+        {
+          "group": "androidx.core",
+          "module": "core",
+          "version": {
+            "requires": "1.19.1"
+          }
+        },
+        {
+          "group": "androidx.preference",
+          "module": "preference-ktx",
+          "version": {
+            "requires": "1.2.1"
+          }
+        },
+        {
+          "group": "androidx.compose.ui",
+          "module": "ui-tooling-preview"
+        },
+        {
+          "group": "com.github.verizonkert.mihon-kit",
+          "module": "source-api",
+          "version": {
+            "requires": "1.0.0"
+          }
+        },
+        {
+          "group": "com.github.verizonkert.mihon-kit",
+          "module": "core-common",
+          "version": {
+            "requires": "1.0.0"
+          }
+        },
+        {
+          "group": "com.squareup.okhttp3",
+          "module": "okhttp",
+          "version": {
+            "requires": "5.5.1"
+          }
+        },
+        {
+          "group": "com.squareup.okhttp3",
+          "module": "okhttp-zstd",
+          "version": {
+            "requires": "5.5.1"
+          }
+        },
+        {
+          "group": "com.squareup.okhttp3",
+          "module": "okhttp-brotli",
+          "version": {
+            "requires": "5.5.1"
+          }
+        },
+        {
+          "group": "org.jsoup",
+          "module": "jsoup",
+          "version": {
+            "requires": "1.23.2"
+          }
+        },
+        {
+          "group": "org.jetbrains.kotlinx",
+          "module": "kotlinx-serialization-json",
+          "version": {
+            "requires": "1.12.0"
+          }
+        },
+        {
+          "group": "org.jetbrains.kotlinx",
+          "module": "kotlinx-coroutines-core",
+          "version": {
+            "requires": "1.11.0"
+          }
+        },
+        {
+          "group": "org.jetbrains.kotlinx",
+          "module": "kotlinx-coroutines-android",
+          "version": {
+            "requires": "1.11.0"
+          }
+        },
+        {
+          "group": "org.jetbrains.kotlinx",
+          "module": "kotlinx-coroutines-guava",
+          "version": {
+            "requires": "1.11.0"
+          }
+        },
+        {
+          "group": "uy.kohesive.injekt",
+          "module": "injekt-core",
+          "version": {
+            "requires": "1.16.1"
+          }
+        },
+        {
+          "group": "org.jetbrains.kotlin",
+          "module": "kotlin-stdlib",
+          "version": {
+            "requires": "2.4.21"
+          }
+        }
+      ],
+      "files": [
+        {
+          "name": "mihon-kit-1.0.0.aar",
+          "url": "mihon-kit-1.0.0.aar",
+          "size": 115330,
+          "sha512": "de1c64ae7b6ad13d851904434a36e34973a2cfd33c66dbfbe439e1d38b382c5eedd6b24becff4958cbb8bff7bf28b4c8c8416d34b7b8a4df4fdfa596745627b6",
+          "sha256": "7e9855fa10e7c2d92144f846a8247da54560e40d80cfb85cc4a9bd3db060cc65",
+          "sha1": "06605fb0b1192fadce013038c42e30548b35baa4",
+          "md5": "c36dffb7fc433d12ae39d7050d4f4780"
+        }
+      ]
+    },
+    {
+      "name": "releaseVariantReleaseSourcePublication",
+      "attributes": {
+        "org.gradle.category": "documentation",
+        "org.gradle.dependency.bundling": "external",
+        "org.gradle.docstype": "sources",
+        "org.gradle.usage": "java-runtime"
+      },
+      "files": [
+        {
+          "name": "mihon-kit-1.0.0-sources.jar",
+          "url": "mihon-kit-1.0.0-sources.jar",
+          "size": 13187,
+          "sha512": "21a9f4e1ad712d2a87123871be84844a032869e006b17a91909ac91e637851d90d2ce120f9f8730750e3ab427cb1afae525dae3b317519772a9f4cfdc73c78fd",
+          "sha256": "974d9d7e6ced325967467d9d7f4ea9aeed35a8f8f16334d3192b46d92983d56c",
+          "sha1": "06d82d1048fb504037e6dd7ca683b2bd62b61436",
+          "md5": "f2a2ca2c90186953f119a371fbb19191"
+        }
+      ]
+    }
+  ]
+}
