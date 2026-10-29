@@ -33,7 +33,7 @@ tasks {
 
 subprojects {
     plugins.withId("maven-publish") {
-        publishing {
+        extensions.configure<PublishingExtension> {
             repositories {
                 maven {
                     name = "LocalRepo"
