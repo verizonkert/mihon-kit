@@ -30,3 +30,16 @@ tasks {
         }
     }
 }
+
+subprojects {
+    plugins.withId("maven-publish") {
+        publishing {
+            repositories {
+                maven {
+                    name = "LocalRepo"
+                    url = uri(rootProject.layout.projectDirectory.dir("repo"))
+                }
+            }
+        }
+    }
+}
