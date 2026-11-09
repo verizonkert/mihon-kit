@@ -8,6 +8,10 @@ import org.jetbrains.kotlin.gradle.dsl.HasConfigurableKotlinCompilerOptions
 import org.jetbrains.kotlin.gradle.dsl.KotlinBaseExtension
 import org.jetbrains.kotlin.gradle.dsl.KotlinCommonCompilerOptions
 
+/**
+ * Configures Java and Kotlin language bytecode target compatibility using Tapmoc
+ * matching the project's configured Java toolchain version.
+ */
 fun Project.configureKotlin() {
     configureJavaCompatibility(mihonx.versions.java.get().toInt())
 }

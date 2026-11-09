@@ -100,13 +100,24 @@ private suspend fun Call.await(callStack: Array<StackTraceElement>): Response {
     }
 }
 
+/**
+ * Asynchronously executes this [Call] without blocking a thread using Kotlin coroutines.
+ * Automatically handles coroutine cancellation by canceling the underlying HTTP call.
+ *
+ * @return The [Response] from the server.
+ * @throws IOException If the request could not be executed due to cancellation or network connectivity issues.
+ */
 suspend fun Call.await(): Response {
     val callStack = Exception().stackTrace.run { copyOfRange(1, size) }
     return await(callStack)
 }
 
 /**
- * Similar to [await] but throws [HttpException] if [Response.isSuccessful] returns false
+ * Asynchronously executes this [Call] and validates that the response returned 2xx status.
+ *
+ * @return The successful [Response].
+ * @throws HttpException If the HTTP status code is not 2xx.
+ * @throws IOException If a network error occurs.
  */
 suspend fun Call.awaitSuccess(): Response {
     val callStack = Exception().stackTrace.run { copyOfRange(1, size) }
@@ -118,6 +129,14 @@ suspend fun Call.awaitSuccess(): Response {
     return response
 }
 
+/**
+ * Creates an [OkHttpClient] call that bypasses local HTTP cache and streams download progress
+ * through the supplied [listener].
+ *
+ * @param request The HTTP request to perform.
+ * @param listener Receives progress events (bytes read, total bytes, completion).
+ * @param existingSize Resumes partial downloads via `Range` header if greater than 0.
+ */
 fun OkHttpClient.newCachelessCallWithProgress(
     request: Request,
     listener: ProgressListener,

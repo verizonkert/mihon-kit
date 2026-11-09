@@ -11,14 +11,12 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
-import mihon.icons.materialsymbols.MaterialSymbols
-import mihon.icons.materialsymbols.rounded.ArrowDownward
-import mihon.icons.materialsymbols.rounded.ArrowUpward
-import mihon.icons.materialsymbols.rounded.Check
-import mihon.icons.materialsymbols.rounded.Close
-import mihon.icons.materialsymbols.rounded.KeyboardArrowDown
-import mihon.icons.materialsymbols.rounded.KeyboardArrowUp
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.ArrowDropDown
+import androidx.compose.material.icons.filled.Check
+import androidx.compose.material.icons.filled.Close
+import androidx.compose.material.icons.filled.KeyboardArrowDown
+import androidx.compose.material.icons.filled.KeyboardArrowUp
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
@@ -51,7 +49,24 @@ import eu.kanade.tachiyomi.source.model.Filter
 import eu.kanade.tachiyomi.source.model.FilterList
 
 /**
- * BottomSheet Dialog that displays Mihon / Tachiyomi filters dynamically.
+ * Dynamic Jetpack Compose BottomSheet dialog that renders interactive UI controls for any [FilterList]
+ * provided by a Mihon / Tachiyomi extension source.
+ *
+ * Automatically maps filter types into appropriate Material 3 interactive components:
+ * - [Filter.Header] $\rightarrow$ Category section titles
+ * - [Filter.Separator] $\rightarrow$ Visual dividers
+ * - [Filter.Select] $\rightarrow$ Dropdown menus
+ * - [Filter.Text] $\rightarrow$ Outlined text input fields
+ * - [Filter.CheckBox] $\rightarrow$ Checkbox with label
+ * - [Filter.TriState] $\rightarrow$ Three-state checkboxes (Include / Exclude / Ignore)
+ * - [Filter.Group] $\rightarrow$ Expandable accordion cards containing nested filters
+ * - [Filter.Sort] $\rightarrow$ Sorting direction toggles (Ascending / Descending)
+ *
+ * @param filters The source's current [FilterList] to render.
+ * @param onDismissRequest Invoked when the user dismisses the bottom sheet without applying.
+ * @param onApply Invoked with the modified [FilterList] when the "Apply" action is pressed.
+ * @param onReset Invoked to reset all filters back to their default states.
+ * @param modifier Composable modifier applied to the bottom sheet container.
  */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -212,8 +227,8 @@ fun FilterItemView(
                 Text(text = filter.name, style = MaterialTheme.typography.bodyLarge)
                 Spacer(modifier = Modifier.weight(1f))
                 when (triState) {
-                    Filter.TriState.STATE_INCLUDE -> Icon(MaterialSymbols.Rounded.Check, contentDescription = "Included", tint = MaterialTheme.colorScheme.primary)
-                    Filter.TriState.STATE_EXCLUDE -> Icon(MaterialSymbols.Rounded.Close, contentDescription = "Excluded", tint = MaterialTheme.colorScheme.error)
+                    Filter.TriState.STATE_INCLUDE -> Icon(Icons.Default.Check, contentDescription = "Included", tint = MaterialTheme.colorScheme.primary)
+                    Filter.TriState.STATE_EXCLUDE -> Icon(Icons.Default.Close, contentDescription = "Excluded", tint = MaterialTheme.colorScheme.error)
                     else -> {}
                 }
             }
@@ -247,7 +262,7 @@ fun FilterItemView(
                             text = options.getOrNull(selectedIndex)?.toString() ?: "None",
                             style = MaterialTheme.typography.bodyLarge,
                         )
-                        Icon(MaterialSymbols.Rounded.KeyboardArrowDown, contentDescription = "Dropdown")
+                        Icon(Icons.Default.ArrowDropDown, contentDescription = "Dropdown")
                     }
 
                     DropdownMenu(
@@ -322,7 +337,7 @@ fun FilterItemView(
                         )
                         if (isSelected) {
                             Icon(
-                                imageVector = if (isAscending) MaterialSymbols.Rounded.ArrowUpward else MaterialSymbols.Rounded.ArrowDownward,
+                                imageVector = if (isAscending) Icons.Default.KeyboardArrowUp else Icons.Default.KeyboardArrowDown,
                                 contentDescription = if (isAscending) "Ascending" else "Descending",
                                 tint = MaterialTheme.colorScheme.primary,
                             )
@@ -356,7 +371,7 @@ fun FilterItemView(
                         )
                         IconButton(onClick = { isExpanded = !isExpanded }) {
                             Icon(
-                                imageVector = if (isExpanded) MaterialSymbols.Rounded.KeyboardArrowUp else MaterialSymbols.Rounded.KeyboardArrowDown,
+                                imageVector = if (isExpanded) Icons.Default.KeyboardArrowUp else Icons.Default.KeyboardArrowDown,
                                 contentDescription = if (isExpanded) "Collapse" else "Expand",
                             )
                         }

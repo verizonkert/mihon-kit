@@ -8,9 +8,11 @@ A lightweight, high-performance Android SDK to dynamically load and run **Mihon 
 
 ---
 
-## 📦 Installation (No Authentication Required)
+## 📦 Installation (Zero Token / 100% Free & Open)
 
-### Step 1: Add the GitHub Maven repository
+Clients can add `mihon-kit` directly without requiring any GitHub personal access tokens (PAT).
+
+### Step 1: Add the Repository
 In your root `settings.gradle.kts`:
 ```kotlin
 dependencyResolutionManagement {
@@ -28,7 +30,8 @@ dependencyResolutionManagement {
 In your app's `build.gradle.kts`:
 ```kotlin
 dependencies {
-    implementation("com.github.verizonkert.mihon-kit:mihon-kit:1.0.0")
+    // Replace <version> with your desired release version tag
+    implementation("com.github.verizonkert:mihon-kit:<version>")
 }
 ```
 

@@ -7,6 +7,13 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.Transient
 
+/**
+ * Represents a single page image within a manga chapter, tracking its loading status and progress.
+ *
+ * @property index Zero-based page position in the chapter.
+ * @property url Webpage URL containing the image viewer (if two-stage loading is required).
+ * @property imageUrl Direct URL pointing to the raw image asset file (PNG/JPEG/WebP).
+ */
 @Serializable
 open class Page(
     val index: Int,
@@ -15,6 +22,7 @@ open class Page(
     @Transient var uri: Uri? = null, // Deprecated but can't be deleted due to extensions
 ) : ProgressListener {
 
+    /** One-based page number for human display. */
     val number: Int
         get() = index + 1
 

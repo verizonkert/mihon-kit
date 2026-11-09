@@ -13,6 +13,10 @@ import org.gradle.api.Plugin
 import org.gradle.api.Project
 import org.gradle.kotlin.dsl.dependencies
 
+/**
+ * Common base convention plugin applied to both Android application and library modules.
+ * Sets compileSdk, minSdk, targetSdk, Java 21 toolchains, and desugaring dependencies.
+ */
 @Suppress("UNUSED")
 class PluginAndroidBase : Plugin<Project> {
     override fun apply(target: Project): Unit = with(target) {

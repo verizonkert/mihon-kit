@@ -20,6 +20,14 @@ import tachiyomi.i18n.MR
 import java.util.concurrent.CountDownLatch
 import java.util.concurrent.TimeUnit
 
+/**
+ * Base interceptor that handles web challenges (such as Cloudflare verification or DDOS guards)
+ * by delegating the request to an Android [WebView] on the main thread and awaiting clearance.
+ *
+ * @param context Android [Context] for WebView initialization.
+ * @param scope Coroutine scope for dispatching actions.
+ * @param defaultUserAgentProvider Provider for default User-Agent strings.
+ */
 abstract class WebViewInterceptor(
     private val context: Context,
     private val scope: CoroutineScope,

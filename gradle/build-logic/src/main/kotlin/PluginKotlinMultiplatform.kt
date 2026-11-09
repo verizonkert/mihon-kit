@@ -15,6 +15,10 @@ import org.gradle.kotlin.dsl.withType
 import org.jetbrains.kotlin.gradle.ExperimentalKotlinGradlePluginApi
 import org.jetbrains.kotlin.gradle.dsl.KotlinMultiplatformExtension
 
+/**
+ * Convention plugin for Kotlin Multiplatform modules targeting Android.
+ * Automatically configures default hierarchy templates, min/compile SDKs, and desugaring.
+ */
 @Suppress("UNUSED")
 class PluginKotlinMultiplatform : Plugin<Project> {
     override fun apply(target: Project): Unit = with(target) {

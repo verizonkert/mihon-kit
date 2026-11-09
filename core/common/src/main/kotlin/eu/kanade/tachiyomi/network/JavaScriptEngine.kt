@@ -10,6 +10,13 @@ import kotlinx.coroutines.withContext
 
 /**
  * Util for evaluating JavaScript in sources.
+ *
+ * NOTE ON HEADLESS QUICKJS SHIM:
+ * Tachiyomi/Mihon extensions compile against the legacy `app.cash.quickjs.QuickJs` package name.
+ * While Cash App originally archived that library, our build relies on
+ * `com.github.zhanghai.quickjs-java:quickjs-android`, which bundles the binary-compatible
+ * `app.cash.quickjs.QuickJs` wrapper directly inside its AAR over modern native C QuickJS.
+ * Therefore, an explicit manual QuickJS shim file (like in TsukiMix) is NOT required here.
  */
 @Suppress("UNUSED", "UNCHECKED_CAST")
 @Inject

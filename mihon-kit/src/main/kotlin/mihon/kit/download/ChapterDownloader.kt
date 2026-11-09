@@ -26,8 +26,10 @@ object ChapterDownloader {
      *
      * @param sourceId ID of the source.
      * @param chapter The chapter to download.
-     * @param outputDir Target directory to store chapter page files.
+     * @param outputDir Target directory to store chapter page files (or temp directory if saveAsCbz is true).
      * @param pages Optional pre-fetched pages. If null or empty, [MihonKit.getPageList] will be called.
+     * @param saveAsCbz If true, packages all pages into a `.cbz` archive with `ComicInfo.xml` upon completion.
+     * @param manga Optional manga metadata used to populate `ComicInfo.xml` when [saveAsCbz] is true.
      * @return Flow of [DownloadStatus] tracking progress and completion.
      */
     fun downloadChapter(
@@ -35,6 +37,8 @@ object ChapterDownloader {
         chapter: SChapter,
         outputDir: File,
         pages: List<Page>? = null,
+        saveAsCbz: Boolean = false,
+        manga: eu.kanade.tachiyomi.source.model.SManga? = null,
     ): Flow<DownloadStatus> = flow {
         emit(DownloadStatus.Queued)
 
@@ -94,11 +98,31 @@ object ChapterDownloader {
             }
         }
 
-        emit(DownloadStatus.Completed(outputDir, downloadedFiles))
+        if (saveAsCbz) {
+            val sanitizedName = chapter.name.replace(Regex("[\\\\/:*?\"<>|]"), "_").trim()
+            val cbzFile = File(outputDir.parentFile ?: outputDir, "$sanitizedName.cbz")
+            val packedFile = CbzPacker.packageToCbz(
+                sourceDir = outputDir,
+                targetCbzFile = cbzFile,
+                manga = manga,
+                chapter = chapter,
+                deleteSourceAfter = true,
+            )
+            emit(DownloadStatus.Completed(packedFile.parentFile ?: packedFile, listOf(packedFile)))
+        } else {
+            emit(DownloadStatus.Completed(outputDir, downloadedFiles))
+        }
     }.flowOn(Dispatchers.IO)
 
     /**
-     * Downloads an individual page to a file with progress.
+     * Downloads an individual page to a temporary file with retry and resume support,
+     * then renames it to its final filename with the detected image format extension.
+     *
+     * @param source The source instance providing image data.
+     * @param page The page metadata containing image URL and index.
+     * @param targetDir The directory to save downloaded page images.
+     * @param filenamePrefix Zero-padded numeric index filename prefix.
+     * @return The completed [File] representing the downloaded image.
      */
     private suspend fun downloadPageFile(
         source: eu.kanade.tachiyomi.source.Source,
@@ -142,6 +166,10 @@ object ChapterDownloader {
         finalFile
     }
 
+    /**
+     * Resolves the appropriate image file extension (`png`, `jpg`, `webp`, `gif`, `jxl`, `avif`)
+     * from HTTP response headers, defaulting to `jpg`.
+     */
     private fun resolveImageExtension(response: Response): String {
         val mime = response.header("Content-Type")?.lowercase()
         return when {

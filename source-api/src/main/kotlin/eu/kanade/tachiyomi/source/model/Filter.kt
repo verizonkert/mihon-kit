@@ -1,14 +1,32 @@
 package eu.kanade.tachiyomi.source.model
 
+/**
+ * Base class for UI catalog search filters exposed by extension sources.
+ *
+ * @param T The state data type representing the current filter value.
+ * @property name Human-readable filter label.
+ * @property state Current state of the filter.
+ */
 sealed class Filter<T>(val name: String, var state: T) {
+    /** Non-interactive group header label. */
     open class Header(name: String) : Filter<Any>(name, 0)
+
+    /** Non-interactive visual divider line. */
     open class Separator(name: String = "") : Filter<Any>(name, 0)
+
+    /** Dropdown single-choice selection list. */
     abstract class Select<V>(name: String, val values: Array<V>, state: Int = 0) : Filter<Int>(
         name,
         state,
     )
+
+    /** Text input field filter. */
     abstract class Text(name: String, state: String = "") : Filter<String>(name, state)
+
+    /** Binary on/off checkbox filter. */
     abstract class CheckBox(name: String, state: Boolean = false) : Filter<Boolean>(name, state)
+
+    /** Three-state filter (Ignore = 0, Include = 1, Exclude = 2), commonly used for genres. */
     abstract class TriState(name: String, state: Int = STATE_IGNORE) : Filter<Int>(name, state) {
         fun isIgnored() = state == STATE_IGNORE
         fun isIncluded() = state == STATE_INCLUDE

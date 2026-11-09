@@ -4,22 +4,36 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.StateFlow
 
+/**
+ * Reactive wrapper around a single key-value setting.
+ * Supports synchronous retrieval, reactive flows, and coroutine [StateFlow] binding.
+ *
+ * @param T The type of value stored in this preference.
+ */
 interface Preference<T> {
 
+    /** Returns the unique storage key for this preference. */
     fun key(): String
 
+    /** Returns the current value synchronously, or [defaultValue] if unset. */
     fun get(): T
 
+    /** Persists a new [value] to storage and notifies change observers. */
     fun set(value: T)
 
+    /** Returns true if this key currently exists in storage. */
     fun isSet(): Boolean
 
+    /** Deletes this key from storage, reverting it to [defaultValue]. */
     fun delete()
 
+    /** Returns the default fallback value. */
     fun defaultValue(): T
 
+    /** Emits updates as a cold [Flow] whenever this preference changes. */
     fun changes(): Flow<T>
 
+    /** Converts this preference into a hot [StateFlow] within the provided [scope]. */
     fun stateIn(scope: CoroutineScope): StateFlow<T>
 
     companion object {

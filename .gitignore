@@ -14,3 +14,6 @@ build/
 Thumbs.db
 *.apk
 local.properties
+
+# Apps
+tester-app/

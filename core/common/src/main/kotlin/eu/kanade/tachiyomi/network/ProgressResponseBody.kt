@@ -9,6 +9,13 @@ import okio.Source
 import okio.buffer
 import java.io.IOException
 
+/**
+ * An OkHttp [ResponseBody] decorator that monitors download progress using a [ForwardingSource].
+ *
+ * @param responseBody The original HTTP response body to wrap.
+ * @param progressListener Listener notified as byte chunks are read.
+ * @param existingSize Bytes already downloaded on disk (used for resumed downloads).
+ */
 class ProgressResponseBody(
     private val responseBody: ResponseBody,
     private val progressListener: ProgressListener,

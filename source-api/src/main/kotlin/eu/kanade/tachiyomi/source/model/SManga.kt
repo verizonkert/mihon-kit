@@ -5,26 +5,39 @@ package eu.kanade.tachiyomi.source.model
 import kotlinx.serialization.json.JsonObject
 import java.io.Serializable
 
+/**
+ * Core domain representation of a manga or comic series provided by an extension source.
+ */
 interface SManga : Serializable {
 
+    /** Relative or absolute URL identifier for the manga on the source. */
     var url: String
 
+    /** Title of the manga. */
     var title: String
 
+    /** Remote URL pointing to the manga's cover art image. */
     var thumbnail_url: String?
 
+    /** Artist(s) credited for the manga illustration. */
     var artist: String?
 
+    /** Author(s) or writer(s) credited for the manga story. */
     var author: String?
 
+    /** Publication status code (e.g. [ONGOING], [COMPLETED], [LICENSED], [PUBLISHING_FINISHED], [CANCELLED], [ON_HIATUS]). */
     var status: Int
 
+    /** Synopsis or description text. */
     var description: String?
 
+    /** Comma-separated list of genres or tags. */
     var genre: String?
 
+    /** Library update check strategy for this manga. */
     var update_strategy: UpdateStrategy
 
+    /** True if full manga details have already been fetched and populated. */
     var initialized: Boolean
 
     /**

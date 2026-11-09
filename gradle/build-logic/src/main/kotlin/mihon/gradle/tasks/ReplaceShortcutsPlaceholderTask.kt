@@ -9,6 +9,10 @@ import org.gradle.api.tasks.InputFile
 import org.gradle.api.tasks.OutputDirectory
 import org.gradle.api.tasks.TaskAction
 
+/**
+ * Gradle task that substitutes dynamic application ID placeholders (`${applicationId}`)
+ * inside launcher `shortcuts.xml` files.
+ */
 abstract class ReplaceShortcutsPlaceholderTask : DefaultTask() {
 
     @get:Input

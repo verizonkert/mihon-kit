@@ -10,6 +10,13 @@ import me.zhanghai.android.libarchive.ArchiveException
 import java.io.Closeable
 import java.nio.ByteBuffer
 
+/**
+ * Fast streaming ZIP writer powered by `libarchive`.
+ * Writes files directly without loading them entirely into memory.
+ *
+ * @property context Android [Context] used to resolve file URIs.
+ * @param file The destination [UniFile] where the zip archive will be written.
+ */
 class ZipWriter(val context: Context, file: UniFile) : Closeable {
     private val pfd = file.openFileDescriptor(context, "wt")
     private val archive = Archive.writeNew()
@@ -28,6 +35,11 @@ class ZipWriter(val context: Context, file: UniFile) : Closeable {
         }
     }
 
+    /**
+     * Writes the content and attributes of the provided [file] into this ZIP archive.
+     *
+     * @param file The [UniFile] source to pack into the archive.
+     */
     fun write(file: UniFile) {
         file.openFileDescriptor(context, "r").use {
             val fd = it.fileDescriptor

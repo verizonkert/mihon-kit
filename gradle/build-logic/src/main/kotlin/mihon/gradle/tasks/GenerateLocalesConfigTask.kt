@@ -9,6 +9,10 @@ import org.gradle.api.tasks.PathSensitive
 import org.gradle.api.tasks.PathSensitivity
 import org.gradle.api.tasks.TaskAction
 
+/**
+ * Gradle task that inspects MOKO resource directories (`strings.xml`, `plurals.xml`)
+ * and generates the Android 13+ per-app language configuration file (`locales_config.xml`).
+ */
 abstract class GenerateLocalesConfigTask : DefaultTask() {
 
     @get:InputFiles

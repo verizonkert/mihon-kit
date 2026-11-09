@@ -47,13 +47,6 @@ object MihonKit {
     ) {
         if (isInitialized) return
 
-        val client = customOkHttpClient ?: OkHttpClient.Builder()
-            .connectTimeout(30, TimeUnit.SECONDS)
-            .readTimeout(30, TimeUnit.SECONDS)
-            .callTimeout(2, TimeUnit.MINUTES)
-            .build()
-        this.okHttpClient = client
-
         val appContext = context.applicationContext
         val app = appContext as? android.app.Application
 
@@ -61,17 +54,23 @@ object MihonKit {
         if (app != null) {
             Injekt.addSingleton(app)
         }
-        Injekt.addSingleton(client)
 
         // Extensions require NetworkHelper from core.common
         val preferenceStore = tachiyomi.core.common.preference.AndroidPreferenceStore(appContext)
         val networkPreferences = eu.kanade.tachiyomi.network.NetworkPreferences(preferenceStore, isDebugBuild = false)
+        // If no DoH provider is set by the user, default to Cloudflare DoH (1) so DNS resolution works reliably on all emulators and networks
+        if (networkPreferences.dohProvider.get() == -1) {
+            networkPreferences.dohProvider.set(eu.kanade.tachiyomi.network.PREF_DOH_CLOUDFLARE)
+        }
         val networkHelper = eu.kanade.tachiyomi.network.NetworkHelper(
             scope = kotlinx.coroutines.GlobalScope,
             context = appContext,
             preferences = networkPreferences,
         )
         Injekt.addSingleton(networkHelper)
+        val finalClient = customOkHttpClient ?: networkHelper.client
+        this.okHttpClient = finalClient
+        Injekt.addSingleton(finalClient)
 
         // Extensions require Json serializer
         val json = kotlinx.serialization.json.Json {
@@ -80,7 +79,31 @@ object MihonKit {
         }
         Injekt.addSingleton(json)
 
+        // Extensions require JavaScriptEngine (QuickJS headless runtime)
+        val javaScriptEngine = eu.kanade.tachiyomi.network.JavaScriptEngine(appContext)
+        Injekt.addSingleton(javaScriptEngine)
+
+        // Built-in LocalSource (ID = 0L)
+        val local = mihon.kit.local.LocalSource(appContext)
+        localSource = local
+        sourceRegistry[mihon.kit.local.LocalSource.ID] = local
+
         isInitialized = true
+    }
+
+    /**
+     * Verifies the cryptographic SHA-256 certificate fingerprint of an extension APK file.
+     *
+     * @param context Application context.
+     * @param apkFile The extension APK file.
+     * @param expectedFingerprint Expected SHA-256 fingerprint from repo.json (optional).
+     */
+    fun verifyApkSignature(
+        context: Context,
+        apkFile: File,
+        expectedFingerprint: String? = null,
+    ): mihon.kit.security.SignatureVerificationResult {
+        return mihon.kit.security.ExtensionSecurityValidator.verifyApk(context, apkFile, expectedFingerprint)
     }
 
     /**
@@ -88,10 +111,31 @@ object MihonKit {
      *
      * @param context Application context.
      * @param apkFile The extension APK file on device storage.
+     * @param expectedSigningFingerprint Optional expected SHA-256 signing fingerprint. If provided and does not match, an [IllegalStateException] is thrown.
      * @return The loaded extension metadata and sources.
      */
-    suspend fun loadExtensionApk(context: Context, apkFile: File): LoadedExtension = withContext(Dispatchers.IO) {
+    suspend fun loadExtensionApk(
+        context: Context,
+        apkFile: File,
+        expectedSigningFingerprint: String? = null,
+    ): LoadedExtension = withContext(Dispatchers.IO) {
         require(apkFile.exists() && apkFile.isFile) { "APK file does not exist: ${apkFile.absolutePath}" }
+
+        if (!expectedSigningFingerprint.isNullOrBlank()) {
+            when (val check = verifyApkSignature(context, apkFile, expectedSigningFingerprint)) {
+                is mihon.kit.security.SignatureVerificationResult.Mismatch -> {
+                    throw SecurityException(
+                        "Extension APK signature mismatch! Expected: ${check.expectedFingerprint}, Actual: ${check.actualFingerprint}"
+                    )
+                }
+                is mihon.kit.security.SignatureVerificationResult.Error -> {
+                    throw SecurityException("Failed to verify APK signature: ${check.message}")
+                }
+                is mihon.kit.security.SignatureVerificationResult.Trusted -> {
+                    // Verified safe
+                }
+            }
+        }
 
         val pkgManager = context.packageManager
         val flags = android.content.pm.PackageManager.GET_META_DATA or
@@ -366,15 +410,159 @@ object MihonKit {
     }
 
     /**
-     * Downloads an entire chapter to the designated output folder, returning a Flow of download progress.
+     * Downloads an entire chapter in-process to the designated output folder, returning a Flow of download progress.
+     * Optionally packages the chapter into a `.cbz` archive with `ComicInfo.xml` when [saveAsCbz] is true.
      */
     fun downloadChapter(
         sourceId: Long,
         chapter: SChapter,
         outputDir: java.io.File,
         pages: List<Page>? = null,
+        saveAsCbz: Boolean = false,
+        manga: eu.kanade.tachiyomi.source.model.SManga? = null,
     ): kotlinx.coroutines.flow.Flow<mihon.kit.download.DownloadStatus> {
-        return mihon.kit.download.ChapterDownloader.downloadChapter(sourceId, chapter, outputDir, pages)
+        return mihon.kit.download.ChapterDownloader.downloadChapter(sourceId, chapter, outputDir, pages, saveAsCbz, manga)
+    }
+
+    /**
+     * Packages a directory of chapter page images into a standard `.cbz` archive with ComicInfo.xml metadata.
+     */
+    suspend fun packageChapterToCbz(
+        chapterDir: java.io.File,
+        targetCbzFile: java.io.File,
+        manga: eu.kanade.tachiyomi.source.model.SManga? = null,
+        chapter: SChapter? = null,
+        deleteSourceAfter: Boolean = true,
+    ): java.io.File {
+        return mihon.kit.download.CbzPacker.packageToCbz(chapterDir, targetCbzFile, manga, chapter, deleteSourceAfter)
+    }
+
+    private var queueManager: mihon.kit.download.DownloadQueueManager? = null
+
+    /**
+     * Returns the persistent [mihon.kit.download.DownloadQueueManager] backed by Android WorkManager.
+     * Manages background downloads that survive app termination and device reboots with system notifications.
+     */
+    fun getDownloadQueueManager(context: Context): mihon.kit.download.DownloadQueueManager {
+        return queueManager ?: synchronized(this) {
+            queueManager ?: mihon.kit.download.DownloadQueueManager(context.applicationContext).also {
+                queueManager = it
+            }
+        }
+    }
+
+    private var downloadAutomationManager: mihon.kit.download.DownloadAutomationManager? = null
+
+    /**
+     * Returns the [mihon.kit.download.DownloadAutomationManager] to handle automatic pre-downloading of upcoming chapters,
+     * auto-deleting read chapters, and automatic disk image cache trimming.
+     */
+    fun getDownloadAutomationManager(context: Context): mihon.kit.download.DownloadAutomationManager {
+        return downloadAutomationManager ?: synchronized(this) {
+            downloadAutomationManager ?: mihon.kit.download.DownloadAutomationManager(context.applicationContext).also {
+                downloadAutomationManager = it
+            }
+        }
+    }
+
+    // =========================================================================
+    // Online Extension Repositories & Catalog Fetcher (Mihon Extension Repos)
+    // =========================================================================
+
+    private var repoService: mihon.kit.repo.ExtensionRepoService? = null
+
+    /**
+     * Returns the [mihon.kit.repo.ExtensionRepoService] instance to fetch online extension catalogs,
+     * add/remove repos, and download extension APKs.
+     */
+    fun getExtensionRepoService(context: Context): mihon.kit.repo.ExtensionRepoService {
+        return repoService ?: synchronized(this) {
+            repoService ?: mihon.kit.repo.ExtensionRepoService(
+                context = context.applicationContext,
+                client = getOkHttpClient(),
+            ).also { repoService = it }
+        }
+    }
+
+    // =========================================================================
+    // Physical Package Installers (Mihon PackageInstaller, Legacy & Shizuku)
+    // =========================================================================
+
+    private var packageInstaller: mihon.kit.installer.ExtensionPackageInstaller? = null
+
+    /**
+     * Returns the [mihon.kit.installer.ExtensionPackageInstaller] to physically install extension APKs
+     * onto Android using PackageInstaller.Session, Legacy Intent, or Shizuku silent installation.
+     */
+    fun getPackageInstaller(context: Context): mihon.kit.installer.ExtensionPackageInstaller {
+        return packageInstaller ?: synchronized(this) {
+            packageInstaller ?: mihon.kit.installer.ExtensionPackageInstaller(context.applicationContext).also {
+                packageInstaller = it
+            }
+        }
+    }
+
+    private var localSource: mihon.kit.local.LocalSource? = null
+
+    /**
+     * Returns the built-in [mihon.kit.local.LocalSource] (ID = 0L) for reading local .cbz, .zip, .epub,
+     * and directory-based manga.
+     */
+    fun getLocalSource(): mihon.kit.local.LocalSource {
+        check(isInitialized) { "MihonKit is not initialized. Call MihonKit.initialize(context) first." }
+        return localSource ?: throw IllegalStateException("LocalSource is not available.")
+    }
+
+    // =========================================================================
+    // Backup & Restore (.tachibk Protobuf)
+    // =========================================================================
+
+    private var backupManager: mihon.kit.backup.BackupManager? = null
+
+    /**
+     * Returns the [mihon.kit.backup.BackupManager] to export and import `.tachibk` Protobuf archives
+     * fully compatible with official Tachiyomi / Mihon.
+     */
+    fun getBackupManager(context: Context): mihon.kit.backup.BackupManager {
+        return backupManager ?: synchronized(this) {
+            backupManager ?: mihon.kit.backup.BackupManager(context.applicationContext).also {
+                backupManager = it
+            }
+        }
+    }
+
+    // =========================================================================
+    // Smart Updates & Chapter Release Interval Prediction (FetchInterval)
+    // =========================================================================
+
+    /**
+     * Calculates the smart update interval and next expected fetch time for a manga based on historical chapter upload dates.
+     * Prevents rate-limits and IP bans by avoiding unnecessary background network requests.
+     */
+    fun calculateFetchInterval(
+        chapters: List<SChapter>,
+        currentFetchInterval: Int = 0,
+        lastFetchTimestamp: Long = 0L,
+        currentTime: Long = System.currentTimeMillis(),
+    ): mihon.kit.updates.FetchIntervalResult {
+        return mihon.kit.updates.FetchInterval.calculate(
+            chapters = chapters,
+            currentFetchInterval = currentFetchInterval,
+            lastFetchTimestamp = lastFetchTimestamp,
+            currentTime = currentTime,
+        )
+    }
+
+    /**
+     * Evaluates whether a manga matches Mihon search query operators like `fi>7` or `nu<3`.
+     */
+    fun matchesUpdateFilters(
+        query: String,
+        fetchIntervalDays: Int,
+        nextFetchTimestamp: Long,
+    ): Boolean {
+        return mihon.kit.updates.LibraryUpdateFilterParser.matchesFetchInterval(query, fetchIntervalDays) &&
+                mihon.kit.updates.LibraryUpdateFilterParser.matchesNextUpdate(query, nextFetchTimestamp)
     }
 }
 

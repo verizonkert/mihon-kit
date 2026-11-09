@@ -17,20 +17,32 @@ import kotlin.time.Instant
 
 private val logger = Logging.getLogger("mihon.gradle.BuildInfo")
 
+/**
+ * Returns a Gradle [Provider] containing the total commit count on the current Git branch.
+ */
 fun Project.getLatestCommitCount(): Provider<String> {
     return git("rev-list", "--count", "HEAD", default = provider { "0" }).map { it.first }
 }
 
+/**
+ * Returns a Gradle [Provider] containing the short Git commit SHA hash.
+ */
 fun Project.getLatestCommitSha(): Provider<String> {
     return git("rev-parse", "--short", "HEAD", default = provider { "unknown" }).map { it.first }
 }
 
+/**
+ * Returns a Gradle [Provider] containing the timestamp of the latest Git commit in ISO format.
+ */
 fun Project.getLatestCommitTime(): Provider<String> {
     return git("log", "-1", "--format=%ct", default = getCurrentTime()).map { (value, isDefault) ->
         if (isDefault) value else Instant.fromEpochSeconds(value.toLong()).toString()
     }
 }
 
+/**
+ * Returns a Gradle [Provider] containing the current build execution time in ISO format.
+ */
 fun Project.getCurrentTime(): Provider<String> {
     return providers.of(CurrentTimeValueSource::class.java) {}
 }

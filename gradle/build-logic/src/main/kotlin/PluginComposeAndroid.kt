@@ -11,6 +11,10 @@ import org.gradle.api.Plugin
 import org.gradle.api.Project
 import org.gradle.kotlin.dsl.dependencies
 
+/**
+ * Convention plugin that enables Jetpack Compose build features and automatically applies
+ * the Kotlin Compose compiler plugin and Compose BOM dependencies.
+ */
 @Suppress("UNUSED")
 class PluginComposeAndroid : Plugin<Project> {
     override fun apply(target: Project): Unit = with(target) {

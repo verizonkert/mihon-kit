@@ -15,6 +15,13 @@ private val DEFAULT_CACHE_CONTROL = CacheControl.Builder().maxAge(10.minutes).bu
 private val DEFAULT_HEADERS = Headers.Builder().build()
 private val DEFAULT_BODY: RequestBody = FormBody.Builder().build()
 
+/**
+ * Builds an HTTP GET [Request] for the given [url] string.
+ *
+ * @param url String target endpoint URL.
+ * @param headers HTTP headers to send with the request.
+ * @param cache OkHttp [CacheControl] policy (defaults to 10 minutes max-age).
+ */
 fun GET(
     url: String,
     headers: Headers = DEFAULT_HEADERS,
@@ -24,6 +31,11 @@ fun GET(
 }
 
 /**
+ * Builds an HTTP GET [Request] for the given [url] [HttpUrl].
+ *
+ * @param url Structured [HttpUrl] target endpoint.
+ * @param headers HTTP headers to send with the request.
+ * @param cache OkHttp [CacheControl] policy.
  * @since extensions-lib 1.4
  */
 fun GET(

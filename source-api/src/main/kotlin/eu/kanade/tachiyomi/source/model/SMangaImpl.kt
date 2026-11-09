@@ -5,6 +5,9 @@ package eu.kanade.tachiyomi.source.model
 import kotlinx.serialization.json.JsonObject
 import mihon.core.common.extensions.EMPTY
 
+/**
+ * Default standard implementation of [SManga].
+ */
 class SMangaImpl : SManga {
 
     override lateinit var url: String

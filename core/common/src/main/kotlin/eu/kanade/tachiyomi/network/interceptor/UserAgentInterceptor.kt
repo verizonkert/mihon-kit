@@ -3,6 +3,12 @@ package eu.kanade.tachiyomi.network.interceptor
 import okhttp3.Interceptor
 import okhttp3.Response
 
+/**
+ * An OkHttp [Interceptor] that injects a default browser User-Agent header into outgoing HTTP requests
+ * if no User-Agent header is already set.
+ *
+ * @param defaultUserAgentProvider Lambda supplier for the current default User-Agent string.
+ */
 class UserAgentInterceptor(
     private val defaultUserAgentProvider: () -> String,
 ) : Interceptor {

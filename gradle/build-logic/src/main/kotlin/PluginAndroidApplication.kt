@@ -5,6 +5,10 @@ import mihon.gradle.extensions.plugins
 import org.gradle.api.Plugin
 import org.gradle.api.Project
 
+/**
+ * Convention plugin for Android application modules.
+ * Applies Android application plugin and common project defaults (`PluginAndroidBase`).
+ */
 @Suppress("UNUSED")
 class PluginAndroidApplication : Plugin<Project> {
     override fun apply(target: Project): Unit = with(target) {

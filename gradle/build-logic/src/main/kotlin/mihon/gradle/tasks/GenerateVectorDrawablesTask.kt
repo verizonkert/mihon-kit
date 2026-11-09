@@ -11,6 +11,10 @@ import org.gradle.api.tasks.PathSensitivity
 import org.gradle.api.tasks.TaskAction
 import java.io.ByteArrayOutputStream
 
+/**
+ * Gradle task that converts vector SVG icons into Android Vector Drawable XML files
+ * using Android Build Tools [Svg2Vector].
+ */
 abstract class GenerateVectorDrawablesTask : DefaultTask() {
 
     @get:InputFiles

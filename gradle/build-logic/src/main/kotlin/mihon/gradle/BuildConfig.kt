@@ -2,10 +2,20 @@ package mihon.gradle
 
 import org.gradle.api.Project
 
+/**
+ * Build configuration flags parsed from Gradle properties and distribution targets.
+ */
 interface BuildConfig {
+    /** Whether telemetry and crash reporting components should be enabled. */
     val includeTelemetry: Boolean
+
+    /** Whether Proguard/R8 mapping files should be uploaded to Firebase Crashlytics. */
     val uploadCrashlyticsMapping: Boolean
+
+    /** Whether in-app self-updater checks are active. */
     val enableUpdater: Boolean
+
+    /** Whether dependencies info block should be included in generated APK metadata. */
     val includeDependencyInfo: Boolean
 }
 
@@ -16,6 +26,9 @@ private enum class Distribution {
     FOSS,
 }
 
+/**
+ * Accessor for project [BuildConfig] values determined by `-Pdist` and command-line flags.
+ */
 val Project.Config: BuildConfig get() = object : BuildConfig {
     private val distribution: Distribution = project.providers.gradleProperty("dist").orNull
         ?.let { name ->

@@ -5,20 +5,35 @@ import okhttp3.Cookie
 import okhttp3.CookieJar
 import okhttp3.HttpUrl
 
+/**
+ * An OkHttp [CookieJar] implementation synchronized with Android's system [CookieManager].
+ *
+ * This allows sharing authentication, sessions, and Cloudflare clearance cookies between
+ * OkHttp background requests and embedded WebViews.
+ */
 class AndroidCookieJar : CookieJar {
 
     private val manager by lazy { CookieManager.getInstance() }
 
+    /**
+     * Saves cookies received from an HTTP response directly into Android's [CookieManager].
+     */
     override fun saveFromResponse(url: HttpUrl, cookies: List<Cookie>) {
         val urlString = url.toString()
 
         cookies.forEach { manager.setCookie(urlString, it.toString()) }
     }
 
+    /**
+     * Loads cookies for an outgoing HTTP request from [CookieManager].
+     */
     override fun loadForRequest(url: HttpUrl): List<Cookie> {
         return get(url)
     }
 
+    /**
+     * Retrieves parsed OkHttp [Cookie] objects for the specified [url].
+     */
     fun get(url: HttpUrl): List<Cookie> {
         val cookies = manager.getCookie(url.toString())
 

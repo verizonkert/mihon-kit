@@ -21,14 +21,14 @@ android {
 
 val releaseVersion = (project.findProperty("VERSION_NAME") as? String)
     ?: (project.version as? String)?.takeIf { it != "unspecified" }
-    ?: "1.0.4"
+    ?: "1.1.0"
 
 afterEvaluate {
     publishing {
         publications {
             create<MavenPublication>("release") {
                 from(components["release"])
-                groupId = "com.github.verizonkert.mihon-kit"
+                groupId = "com.github.verizonkert"
                 artifactId = "mihon-kit"
                 version = releaseVersion
 
@@ -42,10 +42,10 @@ afterEvaluate {
                         val artifactId = artifactIdNode?.text()
                         val currentVersion = version ?: releaseVersion
                         if (artifactId == "source-api") {
-                            groupIdNode?.set(0, "com.github.verizonkert.mihon-kit")
+                            groupIdNode?.set(0, "com.github.verizonkert")
                             versionNode?.set(0, currentVersion)
                         } else if (artifactId == "common") {
-                            groupIdNode?.set(0, "com.github.verizonkert.mihon-kit")
+                            groupIdNode?.set(0, "com.github.verizonkert")
                             artifactIdNode?.set(0, "core-common")
                             versionNode?.set(0, currentVersion)
                         }
@@ -65,15 +65,23 @@ dependencies {
     api(libs.okhttp.brotli)
     api(libs.jsoup)
     api(libs.kotlinx.serialization.json)
+    api(libs.kotlinx.serialization.protobuf)
     api(libs.bundles.kotlinx.coroutines)
     api(libs.injekt)
 
     implementation(platform(libs.androidx.compose.bom))
     implementation(libs.androidx.compose.ui)
     implementation(libs.androidx.compose.material3)
+    implementation(libs.androidx.compose.material.icons)
     implementation(libs.androidx.compose.foundation)
-    implementation(projects.icons.materialSymbols)
 
     implementation(libs.androidx.core)
     implementation(libs.androidx.preference)
+    api(libs.androidx.work)
+    implementation(libs.shizuku.api)
+    api(libs.coil.compose)
+    api(libs.coil.network.okhttp)
+
+    testImplementation(libs.junit.jupiter)
+    testRuntimeOnly(libs.junit.platform.launcher)
 }

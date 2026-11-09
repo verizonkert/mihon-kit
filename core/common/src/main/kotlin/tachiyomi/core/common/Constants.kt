@@ -1,5 +1,8 @@
 package tachiyomi.core.common
 
+/**
+ * Application-wide constants including external documentation links and launcher action shortcuts.
+ */
 object Constants {
     const val URL_HELP = "https://mihon.app/docs/guides/troubleshooting/"
     const val URL_HELP_UPCOMING = "https://mihon.app/docs/faq/updates/upcoming"

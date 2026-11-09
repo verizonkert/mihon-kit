@@ -11,17 +11,26 @@ import org.gradle.kotlin.dsl.configure
 import org.gradle.kotlin.dsl.the
 import org.gradle.kotlin.dsl.withType
 
+/** Accessor for the standard `libs` version catalog. */
 internal val Project.libs get() = the<LibrariesForLibs>()
+
+/** Accessor for the `mihonx` internal project version catalog. */
 internal val Project.mihonx get() = the<LibrariesForMihonx>()
 
+/** Configures plugins using the project's [PluginManager]. */
 internal fun Project.plugins(block: PluginManager.() -> Unit) {
     pluginManager.apply(block)
 }
 
+/** Configures common Android extension settings. */
 internal fun Project.android(block: CommonExtension.() -> Unit) {
     extensions.configure(block)
 }
 
+/**
+ * Configures all [Test] tasks across the project to run on JUnit Platform
+ * with standardized passed, skipped, and failed test logging.
+ */
 fun Project.configureTest() {
     tasks.withType<Test> {
         useJUnitPlatform()

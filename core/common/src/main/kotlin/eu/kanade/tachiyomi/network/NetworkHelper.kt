@@ -16,6 +16,14 @@ import java.io.File
 import kotlin.time.Duration.Companion.minutes
 import kotlin.time.Duration.Companion.seconds
 
+/**
+ * Central networking manager that builds and configures [OkHttpClient] instances with
+ * Mihon defaults (persistent cookie jar, timeout policies, User-Agent rotation, DoH support, and Cloudflare bypass).
+ *
+ * @param scope Coroutine scope for network background operations.
+ * @param context Application [Context] for cache directory management.
+ * @param preferences User preferences controlling DoH, User-Agent, and verbose logging.
+ */
 @Inject
 @SingleIn(AppScope::class)
 class NetworkHelper(
@@ -24,6 +32,9 @@ class NetworkHelper(
     private val preferences: NetworkPreferences,
 ) {
 
+    /**
+     * Cookie jar backed by Android's [android.webkit.CookieManager].
+     */
     val cookieJar = AndroidCookieJar()
 
     private fun clientBuilder(): OkHttpClient.Builder = run {

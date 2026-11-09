@@ -4,7 +4,6 @@ pluginManagement {
         google()
         mavenCentral()
         gradlePluginPortal()
-        maven(url = "https://www.jitpack.io")
     }
 }
 
@@ -22,7 +21,13 @@ dependencyResolutionManagement {
     repositories {
         google()
         mavenCentral()
-        maven(url = "https://www.jitpack.io")
+        maven(url = "https://www.jitpack.io") {
+            content {
+                includeGroup("com.github.mihon")
+                includeGroup("com.github.gpanther")
+                includeGroup("com.github.zhanghai.quickjs-java")
+            }
+        }
     }
 }
 
@@ -38,3 +43,4 @@ include(":icons:material-symbols")
 include(":icons:custom-material-symbols")
 include(":icons:simple-icons")
 include(":i18n")
+

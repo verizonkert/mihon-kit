@@ -11,6 +11,12 @@ import tachiyomi.core.common.i18n.stringResource
 import tachiyomi.i18n.MR
 import java.io.File
 
+/**
+ * Default Android implementation of [FolderProvider] that resolves standard public external
+ * storage directories named after the application.
+ *
+ * @param context Android [Context] used to resolve localized application name resources.
+ */
 @Inject
 @SingleIn(AppScope::class)
 @ContributesBinding(AppScope::class)
