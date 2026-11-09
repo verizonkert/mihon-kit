@@ -1,0 +1,152 @@
+{
+  "formatVersion": "1.1",
+  "component": {
+    "group": "com.github.verizonkert",
+    "module": "source-api",
+    "version": "1.1.0",
+    "attributes": {
+      "org.gradle.status": "release"
+    }
+  },
+  "createdBy": {
+    "gradle": {
+      "version": "9.8.2"
+    }
+  },
+  "variants": [
+    {
+      "name": "releaseVariantReleaseApiPublication",
+      "attributes": {
+        "org.gradle.category": "library",
+        "org.gradle.dependency.bundling": "external",
+        "org.gradle.libraryelements": "aar",
+        "org.gradle.usage": "java-api"
+      },
+      "dependencies": [
+        {
+          "group": "org.jetbrains.kotlin",
+          "module": "kotlin-stdlib",
+          "version": {
+            "requires": "2.4.21"
+          }
+        }
+      ],
+      "files": [
+        {
+          "name": "source-api-1.1.0.aar",
+          "url": "source-api-1.1.0.aar",
+          "size": 81659,
+          "sha512": "dbf60609150473bb181ff8064e9d7adad5b79a79a5714259f3770adb25162ccabe6c12b11d660796f3ea77ee48f6e45917ed4b919682f0af14f3df7cd30d5825",
+          "sha256": "3d2841d552b0096bd67986f4bd9f1e8bf701fb386556e369f33d4e96e75bbc6b",
+          "sha1": "ab9eac87d9f1a282b241bf2cfe890a4181a96ae9",
+          "md5": "ef43b0f897a53de893d2d2e29ac96a9e"
+        }
+      ]
+    },
+    {
+      "name": "releaseVariantReleaseRuntimePublication",
+      "attributes": {
+        "org.gradle.category": "library",
+        "org.gradle.dependency.bundling": "external",
+        "org.gradle.libraryelements": "aar",
+        "org.gradle.usage": "java-runtime"
+      },
+      "dependencies": [
+        {
+          "group": "com.github.verizonkert",
+          "module": "core-common",
+          "version": {
+            "requires": "1.1.0"
+          }
+        },
+        {
+          "group": "org.jetbrains.kotlinx",
+          "module": "kotlinx-serialization-json",
+          "version": {
+            "requires": "1.12.0"
+          }
+        },
+        {
+          "group": "uy.kohesive.injekt",
+          "module": "injekt-core",
+          "version": {
+            "requires": "1.16.1"
+          }
+        },
+        {
+          "group": "io.reactivex",
+          "module": "rxjava",
+          "version": {
+            "requires": "1.3.8"
+          }
+        },
+        {
+          "group": "org.jsoup",
+          "module": "jsoup",
+          "version": {
+            "requires": "1.23.2"
+          }
+        },
+        {
+          "group": "androidx.preference",
+          "module": "preference-ktx",
+          "version": {
+            "requires": "1.2.1"
+          }
+        },
+        {
+          "group": "androidx.compose",
+          "module": "compose-bom-beta",
+          "version": {
+            "requires": "2026.10.01"
+          },
+          "attributes": {
+            "org.gradle.category": "platform"
+          }
+        },
+        {
+          "group": "androidx.compose.runtime",
+          "module": "runtime"
+        },
+        {
+          "group": "org.jetbrains.kotlin",
+          "module": "kotlin-stdlib",
+          "version": {
+            "requires": "2.4.21"
+          }
+        }
+      ],
+      "files": [
+        {
+          "name": "source-api-1.1.0.aar",
+          "url": "source-api-1.1.0.aar",
+          "size": 81659,
+          "sha512": "dbf60609150473bb181ff8064e9d7adad5b79a79a5714259f3770adb25162ccabe6c12b11d660796f3ea77ee48f6e45917ed4b919682f0af14f3df7cd30d5825",
+          "sha256": "3d2841d552b0096bd67986f4bd9f1e8bf701fb386556e369f33d4e96e75bbc6b",
+          "sha1": "ab9eac87d9f1a282b241bf2cfe890a4181a96ae9",
+          "md5": "ef43b0f897a53de893d2d2e29ac96a9e"
+        }
+      ]
+    },
+    {
+      "name": "releaseVariantReleaseSourcePublication",
+      "attributes": {
+        "org.gradle.category": "documentation",
+        "org.gradle.dependency.bundling": "external",
+        "org.gradle.docstype": "sources",
+        "org.gradle.usage": "java-runtime"
+      },
+      "files": [
+        {
+          "name": "source-api-1.1.0-sources.jar",
+          "url": "source-api-1.1.0-sources.jar",
+          "size": 17622,
+          "sha512": "16642509644eaf7cb5cdcf0ce2557b3789cf545b1eec67ea5eab0e961a8d7eeba12364199da2a6bb8d97d2ba31561496b21be20a9b0f23ac483923dafc6bc953",
+          "sha256": "a23c59ac9290f8ecdfb75a598762d65cc2a2e88304b9de290acb6207244c6856",
+          "sha1": "9dee79b139f654960f07b4d8bfeda2f61c621b6b",
+          "md5": "4929a4736c4bc26597523af4041d845b"
+        }
+      ]
+    }
+  ]
+}
